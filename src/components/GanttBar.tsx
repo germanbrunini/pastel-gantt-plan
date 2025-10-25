@@ -10,10 +10,11 @@ interface GanttBarProps {
   lane: Lane;
   startOffset: number;
   width: number;
+  dayWidth: number;
   onUpdate: (id: string, updates: Partial<Lane>) => void;
 }
 
-export const GanttBar = ({ lane, startOffset, width, onUpdate }: GanttBarProps) => {
+export const GanttBar = ({ lane, startOffset, width, dayWidth, onUpdate }: GanttBarProps) => {
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
 
@@ -35,8 +36,8 @@ export const GanttBar = ({ lane, startOffset, width, onUpdate }: GanttBarProps) 
     <div
       className="absolute h-10 group"
       style={{
-        left: `${startOffset * 40}px`,
-        width: `${width * 40}px`,
+        left: `${startOffset * dayWidth}px`,
+        width: `${width * dayWidth}px`,
       }}
     >
       {/* Main bar */}

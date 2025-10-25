@@ -3,9 +3,10 @@ import { format, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, eachWee
 interface TimelineHeaderProps {
   startMonth: Date;
   monthsToShow: number;
+  dayWidth: number;
 }
 
-export const TimelineHeader = ({ startMonth, monthsToShow }: TimelineHeaderProps) => {
+export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineHeaderProps) => {
   const months = Array.from({ length: monthsToShow }, (_, i) => addMonths(startMonth, i));
 
   return (
@@ -25,8 +26,8 @@ export const TimelineHeader = ({ startMonth, monthsToShow }: TimelineHeaderProps
             return (
               <div
                 key={idx}
-                className="border-l border-border px-4 py-4 text-center font-semibold text-foreground"
-                style={{ width: `${daysInMonth * 40}px` }}
+                className="border-l border-border px-4 py-4 text-center font-semibold text-foreground rounded-2xl mx-1 bg-muted/20"
+                style={{ width: `${daysInMonth * dayWidth}px` }}
               >
                 {format(month, "MMMM yyyy")}
               </div>
@@ -65,8 +66,8 @@ export const TimelineHeader = ({ startMonth, monthsToShow }: TimelineHeaderProps
                   return (
                     <div
                       key={weekIdx}
-                      className="px-2 py-3 text-center text-sm font-medium text-muted-foreground border-l border-gantt-grid first:border-l-0"
-                      style={{ width: `${daysInWeek * 40}px` }}
+                      className="px-2 py-3 text-center text-sm font-medium text-muted-foreground border-l border-r border-gantt-grid first:border-l-0"
+                      style={{ width: `${daysInWeek * dayWidth}px` }}
                     >
                       w{weekIdx + 1}
                     </div>
@@ -95,7 +96,8 @@ export const TimelineHeader = ({ startMonth, monthsToShow }: TimelineHeaderProps
                 {days.map((day, dayIdx) => (
                   <div
                     key={dayIdx}
-                    className="w-[40px] px-1 py-3 text-center text-xs font-medium text-muted-foreground border-l border-gantt-grid first:border-l-0"
+                    className="px-1 py-3 text-center text-xs font-medium text-muted-foreground border-l border-gantt-grid first:border-l-0"
+                    style={{ width: `${dayWidth}px` }}
                   >
                     {format(day, "d")}
                   </div>

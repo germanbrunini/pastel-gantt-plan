@@ -14,6 +14,7 @@ interface LaneRowProps {
   totalLanes: number;
   startMonth: Date;
   monthsToShow: number;
+  dayWidth: number;
   onUpdate: (id: string, updates: Partial<Lane>) => void;
   onDelete: (id: string) => void;
   onReorder: (fromIndex: number, toIndex: number) => void;
@@ -26,6 +27,7 @@ export const LaneRow = ({
   totalLanes,
   startMonth,
   monthsToShow,
+  dayWidth,
   onUpdate,
   onDelete,
   onReorder,
@@ -169,11 +171,12 @@ export const LaneRow = ({
       </div>
 
       {/* Timeline area */}
-      <div className="flex-1 relative py-6" style={{ width: `${totalDays * 40}px` }}>
+      <div className="flex-1 relative py-6" style={{ width: `${totalDays * dayWidth}px` }}>
         <GanttBar
           lane={lane}
           startOffset={barStartOffset}
           width={barWidth}
+          dayWidth={dayWidth}
           onUpdate={onUpdate}
         />
       </div>

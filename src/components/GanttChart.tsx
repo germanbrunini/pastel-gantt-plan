@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { TimelineHeader } from "./TimelineHeader";
 import { LaneRow } from "./LaneRow";
 import { Button } from "./ui/button";
 import { Plus, Calendar } from "lucide-react";
-import { format, addMonths, subMonths } from "date-fns";
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar as CalendarComponent } from "./ui/calendar";
 import { cn } from "@/lib/utils";
@@ -99,6 +99,23 @@ export const GanttChart = () => {
     setStartMonth(direction === "prev" ? subMonths(startMonth, 1) : addMonths(startMonth, 1));
   };
 
+  // Calculate dynamic day width based on total days and available space
+  const dayWidth = useMemo(() => {
+    const months = Array.from({ length: monthsToShow }, (_, i) => addMonths(startMonth, i));
+    const totalDays = months.reduce((acc, month) => {
+      const days = eachDayOfInterval({
+        start: startOfMonth(month),
+        end: endOfMonth(month),
+      });
+      return acc + days.length;
+    }, 0);
+    
+    // Available width = viewport width - lane column (320px) - padding
+    // We'll use a max container of 1600px with some padding
+    const availableWidth = 1200; // Adjust based on container
+    return Math.max(20, availableWidth / totalDays); // Min 20px per day
+  }, [startMonth, monthsToShow]);
+
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-[1600px] mx-auto space-y-6">
@@ -142,8 +159,8 @@ export const GanttChart = () => {
         {/* Gantt Chart */}
         <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
           <div className="overflow-x-auto">
-            <div className="min-w-[1200px]">
-              <TimelineHeader startMonth={startMonth} monthsToShow={monthsToShow} />
+            <div>
+              <TimelineHeader startMonth={startMonth} monthsToShow={monthsToShow} dayWidth={dayWidth} />
               <div className="bg-gantt-bg">
                 {lanes.map((lane, index) => (
                   <LaneRow
@@ -153,6 +170,7 @@ export const GanttChart = () => {
                     totalLanes={lanes.length}
                     startMonth={startMonth}
                     monthsToShow={monthsToShow}
+                    dayWidth={dayWidth}
                     onUpdate={updateLane}
                     onDelete={deleteLane}
                     onReorder={reorderLanes}
