@@ -100,7 +100,7 @@ export const GanttChart = () => {
   };
 
   // Calculate dynamic day width based on total days and available space
-  const dayWidth = useMemo(() => {
+  const { dayWidth, timelineWidth } = useMemo(() => {
     const months = Array.from({ length: monthsToShow }, (_, i) => addMonths(startMonth, i));
     const totalDays = months.reduce((acc, month) => {
       const days = eachDayOfInterval({
@@ -110,14 +110,19 @@ export const GanttChart = () => {
       return acc + days.length;
     }, 0);
     
-    // Available width - adjust based on screen and lane column
-    // We want to fit everything in viewport width minus lane column (320px) and some padding
+    // Fixed timeline width calculation
     const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1600;
     const laneColumnWidth = 320;
-    const padding = 100;
-    const availableWidth = Math.max(800, viewportWidth - laneColumnWidth - padding);
+    const padding = 80;
+    const maxTimelineWidth = viewportWidth - laneColumnWidth - padding;
     
-    return Math.max(15, Math.floor(availableWidth / totalDays));
+    // Calculate day width to fit exactly in available space
+    const calculatedDayWidth = Math.floor(maxTimelineWidth / totalDays);
+    
+    return {
+      dayWidth: calculatedDayWidth,
+      timelineWidth: totalDays * calculatedDayWidth
+    };
   }, [startMonth, monthsToShow]);
 
   return (
@@ -162,31 +167,29 @@ export const GanttChart = () => {
 
         {/* Gantt Chart */}
         <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
-          <div className="overflow-x-auto">
-            <div>
-              <TimelineHeader startMonth={startMonth} monthsToShow={monthsToShow} dayWidth={dayWidth} />
-              <div className="bg-gantt-bg">
-                {lanes.map((lane, index) => (
-                  <LaneRow
-                    key={lane.id}
-                    lane={lane}
-                    index={index}
-                    totalLanes={lanes.length}
-                    startMonth={startMonth}
-                    monthsToShow={monthsToShow}
-                    dayWidth={dayWidth}
-                    onUpdate={updateLane}
-                    onDelete={deleteLane}
-                    onReorder={reorderLanes}
-                    availableColors={AVAILABLE_COLORS}
-                  />
-                ))}
-                {lanes.length === 0 && (
-                  <div className="py-20 text-center text-muted-foreground">
-                    <p className="text-lg">No milestones yet. Click "Add Lane" to get started!</p>
-                  </div>
-                )}
-              </div>
+          <div style={{ maxWidth: `${timelineWidth + 320}px` }}>
+            <TimelineHeader startMonth={startMonth} monthsToShow={monthsToShow} dayWidth={dayWidth} />
+            <div className="bg-gantt-bg">
+              {lanes.map((lane, index) => (
+                <LaneRow
+                  key={lane.id}
+                  lane={lane}
+                  index={index}
+                  totalLanes={lanes.length}
+                  startMonth={startMonth}
+                  monthsToShow={monthsToShow}
+                  dayWidth={dayWidth}
+                  onUpdate={updateLane}
+                  onDelete={deleteLane}
+                  onReorder={reorderLanes}
+                  availableColors={AVAILABLE_COLORS}
+                />
+              ))}
+              {lanes.length === 0 && (
+                <div className="py-20 text-center text-muted-foreground">
+                  <p className="text-lg">No milestones yet. Click "Add Lane" to get started!</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
