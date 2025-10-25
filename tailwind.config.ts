@@ -57,6 +57,18 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        gantt: {
+          "purple-light": "hsl(var(--gantt-purple-light))",
+          purple: "hsl(var(--gantt-purple))",
+          "purple-dark": "hsl(var(--gantt-purple-dark))",
+          "blue-light": "hsl(var(--gantt-blue-light))",
+          blue: "hsl(var(--gantt-blue))",
+          "blue-dark": "hsl(var(--gantt-blue-dark))",
+          violet: "hsl(var(--gantt-violet))",
+          sky: "hsl(var(--gantt-sky))",
+          bg: "hsl(var(--gantt-bg))",
+          grid: "hsl(var(--gantt-grid))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

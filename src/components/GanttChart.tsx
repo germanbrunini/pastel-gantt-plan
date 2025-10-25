@@ -1,0 +1,174 @@
+import { useState } from "react";
+import { TimelineHeader } from "./TimelineHeader";
+import { LaneRow } from "./LaneRow";
+import { Button } from "./ui/button";
+import { Plus, Calendar } from "lucide-react";
+import { format, addMonths, subMonths } from "date-fns";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Calendar as CalendarComponent } from "./ui/calendar";
+import { cn } from "@/lib/utils";
+
+export interface Lane {
+  id: string;
+  name: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  color: string;
+}
+
+const AVAILABLE_COLORS = [
+  "gantt-purple",
+  "gantt-purple-light",
+  "gantt-purple-dark",
+  "gantt-blue",
+  "gantt-blue-light",
+  "gantt-blue-dark",
+  "gantt-violet",
+  "gantt-sky",
+];
+
+export const GanttChart = () => {
+  const [startMonth, setStartMonth] = useState<Date>(new Date(2024, 0, 1)); // January 2024
+  const [monthsToShow, setMonthsToShow] = useState<number>(3);
+  const [lanes, setLanes] = useState<Lane[]>([
+    {
+      id: "1",
+      name: "On-Site Meetings",
+      description: "Initial stakeholder meetings",
+      startDate: new Date(2024, 0, 12),
+      endDate: new Date(2024, 0, 16),
+      color: "gantt-blue",
+    },
+    {
+      id: "2",
+      name: "Group Discussions",
+      description: "Team brainstorming sessions",
+      startDate: new Date(2024, 0, 14),
+      endDate: new Date(2024, 0, 17),
+      color: "gantt-blue-dark",
+    },
+    {
+      id: "3",
+      name: "Documentation",
+      description: "Project documentation phase",
+      startDate: new Date(2024, 0, 17),
+      endDate: new Date(2024, 0, 20),
+      color: "gantt-purple-light",
+    },
+  ]);
+
+  const addLane = () => {
+    const newLane: Lane = {
+      id: Date.now().toString(),
+      name: "New Milestone",
+      description: "Add description here",
+      startDate: new Date(),
+      endDate: addMonths(new Date(), 1),
+      color: AVAILABLE_COLORS[Math.floor(Math.random() * AVAILABLE_COLORS.length)],
+    };
+    setLanes([...lanes, newLane]);
+  };
+
+  const updateLane = (id: string, updates: Partial<Lane>) => {
+    setLanes(lanes.map((lane) => (lane.id === id ? { ...lane, ...updates } : lane)));
+  };
+
+  const deleteLane = (id: string) => {
+    setLanes(lanes.filter((lane) => lane.id !== id));
+  };
+
+  const reorderLanes = (fromIndex: number, toIndex: number) => {
+    const newLanes = [...lanes];
+    const [removed] = newLanes.splice(fromIndex, 1);
+    newLanes.splice(toIndex, 0, removed);
+    setLanes(newLanes);
+  };
+
+  const addMonth = () => {
+    setMonthsToShow(monthsToShow + 1);
+  };
+
+  const removeMonth = () => {
+    if (monthsToShow > 1) {
+      setMonthsToShow(monthsToShow - 1);
+    }
+  };
+
+  const moveStartMonth = (direction: "prev" | "next") => {
+    setStartMonth(direction === "prev" ? subMonths(startMonth, 1) : addMonths(startMonth, 1));
+  };
+
+  return (
+    <div className="min-h-screen bg-background p-8">
+      <div className="max-w-[1600px] mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-foreground mb-2">Project Gantt Timeline</h1>
+            <p className="text-muted-foreground">Plan and track your project milestones</p>
+          </div>
+          <div className="flex gap-3">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <Calendar className="w-4 h-4" />
+                  {format(startMonth, "MMMM yyyy")}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <CalendarComponent
+                  mode="single"
+                  selected={startMonth}
+                  onSelect={(date) => date && setStartMonth(date)}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+            <Button onClick={removeMonth} variant="outline" disabled={monthsToShow <= 1}>
+              - Month
+            </Button>
+            <Button onClick={addMonth} variant="outline">
+              + Month
+            </Button>
+            <Button onClick={addLane} className="gap-2">
+              <Plus className="w-4 h-4" />
+              Add Lane
+            </Button>
+          </div>
+        </div>
+
+        {/* Gantt Chart */}
+        <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
+          <div className="overflow-x-auto">
+            <div className="min-w-[1200px]">
+              <TimelineHeader startMonth={startMonth} monthsToShow={monthsToShow} />
+              <div className="bg-gantt-bg">
+                {lanes.map((lane, index) => (
+                  <LaneRow
+                    key={lane.id}
+                    lane={lane}
+                    index={index}
+                    totalLanes={lanes.length}
+                    startMonth={startMonth}
+                    monthsToShow={monthsToShow}
+                    onUpdate={updateLane}
+                    onDelete={deleteLane}
+                    onReorder={reorderLanes}
+                    availableColors={AVAILABLE_COLORS}
+                  />
+                ))}
+                {lanes.length === 0 && (
+                  <div className="py-20 text-center text-muted-foreground">
+                    <p className="text-lg">No milestones yet. Click "Add Lane" to get started!</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

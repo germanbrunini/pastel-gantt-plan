@@ -8,81 +8,104 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 250 100% 98%;
+    --foreground: 260 30% 25%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 260 30% 25%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 260 30% 25%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 270 60% 70%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 70% 75%;
+    --secondary-foreground: 260 30% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 250 40% 95%;
+    --muted-foreground: 260 20% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 195 65% 80%;
+    --accent-foreground: 260 30% 25%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 65%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 250 30% 90%;
+    --input: 250 30% 90%;
+    --ring: 270 60% 70%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
+
+    /* Gantt chart colors - pastel purples and blues */
+    --gantt-purple-light: 280 70% 85%;
+    --gantt-purple: 270 60% 70%;
+    --gantt-purple-dark: 265 50% 60%;
+    
+    --gantt-blue-light: 200 70% 85%;
+    --gantt-blue: 210 70% 75%;
+    --gantt-blue-dark: 205 60% 65%;
+    
+    --gantt-violet: 260 65% 75%;
+    --gantt-sky: 195 65% 80%;
+    
+    --gantt-bg: 250 50% 97%;
+    --gantt-grid: 250 20% 92%;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 260 40% 8%;
+    --foreground: 250 40% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 260 35% 12%;
+    --card-foreground: 250 40% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 260 35% 12%;
+    --popover-foreground: 250 40% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 270 60% 65%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 60% 60%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 260 30% 18%;
+    --muted-foreground: 250 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 195 55% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 60% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 260 30% 20%;
+    --input: 260 30% 20%;
+    --ring: 270 60% 65%;
+    
+    --gantt-purple-light: 280 50% 45%;
+    --gantt-purple: 270 55% 55%;
+    --gantt-purple-dark: 265 45% 50%;
+    
+    --gantt-blue-light: 200 50% 45%;
+    --gantt-blue: 210 60% 55%;
+    --gantt-blue-dark: 205 50% 50%;
+    
+    --gantt-violet: 260 55% 60%;
+    --gantt-sky: 195 55% 60%;
+    
+    --gantt-bg: 260 35% 10%;
+    --gantt-grid: 260 25% 18%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
