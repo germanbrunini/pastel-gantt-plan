@@ -110,10 +110,14 @@ export const GanttChart = () => {
       return acc + days.length;
     }, 0);
     
-    // Available width = viewport width - lane column (320px) - padding
-    // We'll use a max container of 1600px with some padding
-    const availableWidth = 1200; // Adjust based on container
-    return Math.max(20, availableWidth / totalDays); // Min 20px per day
+    // Available width - adjust based on screen and lane column
+    // We want to fit everything in viewport width minus lane column (320px) and some padding
+    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1600;
+    const laneColumnWidth = 320;
+    const padding = 100;
+    const availableWidth = Math.max(800, viewportWidth - laneColumnWidth - padding);
+    
+    return Math.max(15, Math.floor(availableWidth / totalDays));
   }, [startMonth, monthsToShow]);
 
   return (

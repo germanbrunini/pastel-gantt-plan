@@ -68,15 +68,35 @@ export const LaneRow = ({
 
   // Calculate total days to show
   const endMonth = addMonths(startMonth, monthsToShow - 1);
-  const totalDays = eachDayOfInterval({
+  const allDays = eachDayOfInterval({
     start: startOfMonth(startMonth),
     end: endOfMonth(endMonth),
-  }).length;
+  });
+  const totalDays = allDays.length;
 
   // Calculate bar position and width
   const timelineStart = startOfMonth(startMonth);
   const barStartOffset = Math.max(0, differenceInDays(lane.startDate, timelineStart));
   const barWidth = differenceInDays(lane.endDate, lane.startDate) + 1;
+
+  // Calculate week boundaries for vertical lines
+  const months = Array.from({ length: monthsToShow }, (_, i) => addMonths(startMonth, i));
+  const weekBoundaries: number[] = [];
+  let dayCount = 0;
+  
+  months.forEach((month) => {
+    const monthStart = startOfMonth(month);
+    const monthEnd = endOfMonth(month);
+    const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
+    
+    days.forEach((day, idx) => {
+      // Add vertical line at the start of each week (Monday)
+      if (day.getDay() === 1 && idx > 0) {
+        weekBoundaries.push(dayCount);
+      }
+      dayCount++;
+    });
+  });
 
   return (
     <div
@@ -172,6 +192,15 @@ export const LaneRow = ({
 
       {/* Timeline area */}
       <div className="flex-1 relative py-6" style={{ width: `${totalDays * dayWidth}px` }}>
+        {/* Week vertical lines */}
+        {weekBoundaries.map((dayIndex, idx) => (
+          <div
+            key={idx}
+            className="absolute top-0 bottom-0 w-px bg-gantt-grid"
+            style={{ left: `${dayIndex * dayWidth}px` }}
+          />
+        ))}
+        
         <GanttBar
           lane={lane}
           startOffset={barStartOffset}
