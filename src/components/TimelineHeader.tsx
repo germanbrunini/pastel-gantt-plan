@@ -1,4 +1,4 @@
-import { format, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, eachWeekOfInterval, startOfWeek } from "date-fns";
+import { format, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek } from "date-fns";
 
 interface TimelineHeaderProps {
   startMonth: Date;
@@ -8,6 +8,26 @@ interface TimelineHeaderProps {
 
 export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineHeaderProps) => {
   const months = Array.from({ length: monthsToShow }, (_, i) => addMonths(startMonth, i));
+  
+  // Calculate all weeks across the entire timeline (7-day weeks that can span months)
+  const timelineStart = startOfMonth(startMonth);
+  const timelineEnd = endOfMonth(months[months.length - 1]);
+  const allWeeks: { start: Date; end: Date; weekNumber: number }[] = [];
+  
+  let currentWeekStart = startOfWeek(timelineStart, { weekStartsOn: 1 });
+  let weekCounter = 1;
+  
+  while (currentWeekStart <= timelineEnd) {
+    const currentWeekEnd = endOfWeek(currentWeekStart, { weekStartsOn: 1 });
+    allWeeks.push({
+      start: currentWeekStart,
+      end: currentWeekEnd,
+      weekNumber: weekCounter
+    });
+    currentWeekStart = new Date(currentWeekEnd);
+    currentWeekStart.setDate(currentWeekStart.getDate() + 1);
+    weekCounter++;
+  }
 
   return (
     <div className="bg-card border-b border-border">
@@ -26,8 +46,11 @@ export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineH
             return (
               <div
                 key={idx}
-                className="border-l border-border px-4 py-4 text-center font-semibold text-foreground rounded-2xl mx-1 bg-muted/20"
-                style={{ width: `${daysInMonth * dayWidth}px` }}
+                className="border-l border-border px-4 py-4 text-center font-semibold text-foreground mx-1 bg-muted/20"
+                style={{ 
+                  width: `${daysInMonth * dayWidth}px`,
+                  borderRadius: `${Math.min(daysInMonth * dayWidth / 2, 50)}px`
+                }}
               >
                 {format(month, "MMMM yyyy")}
               </div>
@@ -36,43 +59,25 @@ export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineH
         </div>
       </div>
 
-      {/* Weeks Row */}
+      {/* Weeks Row - 7-day weeks spanning across months */}
       <div className="flex border-b border-border">
         <div className="w-80 shrink-0 px-6 py-3 text-sm font-medium text-muted-foreground bg-muted/20">
           Description
         </div>
         <div className="flex flex-1">
-          {months.map((month, monthIdx) => {
-            const monthStart = startOfMonth(month);
-            const monthEnd = endOfMonth(month);
-            const weeks = eachWeekOfInterval(
-              { start: monthStart, end: monthEnd },
-              { weekStartsOn: 1 }
-            );
-
+          {allWeeks.map((week, idx) => {
+            // Calculate how many days of this week are visible in our timeline
+            const visibleStart = week.start < timelineStart ? timelineStart : week.start;
+            const visibleEnd = week.end > timelineEnd ? timelineEnd : week.end;
+            const visibleDays = eachDayOfInterval({ start: visibleStart, end: visibleEnd }).length;
+            
             return (
-              <div key={monthIdx} className="flex border-l border-border">
-                {weeks.map((week, weekIdx) => {
-                  const weekStart = startOfWeek(week, { weekStartsOn: 1 });
-                  const weekEnd = new Date(weekStart);
-                  weekEnd.setDate(weekStart.getDate() + 6);
-                  
-                  // Calculate days in this week that belong to current month
-                  const daysInWeek = eachDayOfInterval({
-                    start: weekStart > monthStart ? weekStart : monthStart,
-                    end: weekEnd < monthEnd ? weekEnd : monthEnd,
-                  }).length;
-
-                  return (
-                    <div
-                      key={weekIdx}
-                      className="px-2 py-3 text-center text-sm font-medium text-muted-foreground border-l border-r border-gantt-grid first:border-l-0"
-                      style={{ width: `${daysInWeek * dayWidth}px` }}
-                    >
-                      w{weekIdx + 1}
-                    </div>
-                  );
-                })}
+              <div
+                key={idx}
+                className="px-2 py-3 text-center text-sm font-medium text-muted-foreground border-r border-gantt-grid"
+                style={{ width: `${visibleDays * dayWidth}px` }}
+              >
+                w{week.weekNumber}
               </div>
             );
           })}
