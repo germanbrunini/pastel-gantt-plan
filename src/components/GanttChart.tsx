@@ -110,14 +110,14 @@ export const GanttChart = () => {
       return acc + days.length;
     }, 0);
     
-    // Fixed timeline width calculation
+    // Calculate using 100% of viewport width
     const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1600;
-    const laneColumnWidth = 320;
-    const padding = 80;
-    const maxTimelineWidth = viewportWidth - laneColumnWidth - padding;
+    const laneColumnWidth = 320; // Fixed width for the task column
+    const padding = 64; // Total horizontal padding (32px on each side from p-8)
+    const availableWidth = viewportWidth - laneColumnWidth - padding;
     
-    // Calculate day width to fit exactly in available space
-    const calculatedDayWidth = Math.floor(maxTimelineWidth / totalDays);
+    // Calculate day width to fit exactly in available space (minimum 15px for readability)
+    const calculatedDayWidth = Math.max(15, Math.floor(availableWidth / totalDays));
     
     return {
       dayWidth: calculatedDayWidth,
@@ -127,7 +127,7 @@ export const GanttChart = () => {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-[1600px] mx-auto space-y-6">
+      <div className="w-full mx-auto space-y-6">{/* Removed max-w to use full viewport */}
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -167,7 +167,7 @@ export const GanttChart = () => {
 
         {/* Gantt Chart */}
         <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
-          <div style={{ maxWidth: `${timelineWidth + 320}px` }}>
+          <div className="w-full overflow-hidden">{/* Always use full width, prevent scroll */}
             <TimelineHeader startMonth={startMonth} monthsToShow={monthsToShow} dayWidth={dayWidth} />
             <div className="bg-gantt-bg">
               {lanes.map((lane, index) => (
