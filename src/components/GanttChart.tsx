@@ -29,31 +29,31 @@ const AVAILABLE_COLORS = [
 ];
 
 export const GanttChart = () => {
-  const [startMonth, setStartMonth] = useState<Date>(new Date(2024, 0, 1)); // January 2024
+  const [startMonth, setStartMonth] = useState<Date>(startOfMonth(new Date())); // Current month
   const [monthsToShow, setMonthsToShow] = useState<number>(3);
   const [lanes, setLanes] = useState<Lane[]>([
     {
       id: "1",
       name: "On-Site Meetings",
       description: "Initial stakeholder meetings",
-      startDate: new Date(2024, 0, 12),
-      endDate: new Date(2024, 0, 16),
+      startDate: new Date(),
+      endDate: addMonths(new Date(), 0.2),
       color: "gantt-blue",
     },
     {
       id: "2",
       name: "Group Discussions",
       description: "Team brainstorming sessions",
-      startDate: new Date(2024, 0, 14),
-      endDate: new Date(2024, 0, 17),
+      startDate: addMonths(new Date(), 0.2),
+      endDate: addMonths(new Date(), 0.4),
       color: "gantt-blue-dark",
     },
     {
       id: "3",
       name: "Documentation",
       description: "Project documentation phase",
-      startDate: new Date(2024, 0, 17),
-      endDate: new Date(2024, 0, 20),
+      startDate: addMonths(new Date(), 0.4),
+      endDate: addMonths(new Date(), 0.6),
       color: "gantt-purple-light",
     },
   ]);
