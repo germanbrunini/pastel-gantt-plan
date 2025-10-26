@@ -98,15 +98,28 @@ export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineH
 
             return (
               <div key={monthIdx} className="flex border-l border-border">
-                {days.map((day, dayIdx) => (
-                  <div
-                    key={dayIdx}
-                    className="px-1 py-3 text-center text-xs font-medium text-muted-foreground border-l border-gantt-grid first:border-l-0"
-                    style={{ width: `${dayWidth}px` }}
-                  >
-                    {format(day, "d")}
-                  </div>
-                ))}
+                {days.map((day, dayIdx) => {
+                  const showDayInitials = monthsToShow >= 3;
+                  const dayLabel = showDayInitials 
+                    ? format(day, "EEEEE") // Single letter day (M, T, W, T, F, S, S)
+                    : format(day, "d"); // Day number
+                  
+                  // Dynamic font size based on dayWidth
+                  const fontSize = dayWidth < 20 ? '0.625rem' : dayWidth < 30 ? '0.75rem' : '0.875rem';
+                  
+                  return (
+                    <div
+                      key={dayIdx}
+                      className="px-1 py-3 text-center font-medium text-muted-foreground border-l border-gantt-grid first:border-l-0"
+                      style={{ 
+                        width: `${dayWidth}px`,
+                        fontSize: fontSize
+                      }}
+                    >
+                      {dayLabel}
+                    </div>
+                  );
+                })}
               </div>
             );
           })}
