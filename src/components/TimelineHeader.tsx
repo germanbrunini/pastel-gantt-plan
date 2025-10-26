@@ -36,20 +36,24 @@ export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineH
         <div className="w-80 shrink-0 px-6 py-4 font-semibold text-foreground bg-muted/30">
           Task / Phase
         </div>
-        <div className="flex flex-1">
+        <div className="flex flex-1 overflow-hidden">
           {months.map((month, idx) => {
             const daysInMonth = eachDayOfInterval({
               start: startOfMonth(month),
               end: endOfMonth(month),
             }).length;
             
+            const monthWidth = daysInMonth * dayWidth;
+            
             return (
               <div
                 key={idx}
-                className="border-l border-border px-4 py-4 text-center font-semibold text-foreground mx-1 bg-muted/20"
+                className="py-4 text-center font-semibold text-foreground bg-muted/20 shrink-0"
                 style={{ 
-                  width: `${daysInMonth * dayWidth}px`,
-                  borderRadius: `${Math.min(daysInMonth * dayWidth / 2, 50)}px`
+                  width: `${monthWidth}px`,
+                  borderRadius: `${Math.min(monthWidth / 2, 50)}px`,
+                  marginLeft: idx === 0 ? '0' : '4px',
+                  marginRight: idx === months.length - 1 ? '0' : '4px'
                 }}
               >
                 {format(month, "MMMM yyyy")}
@@ -64,7 +68,7 @@ export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineH
         <div className="w-80 shrink-0 px-6 py-3 text-sm font-medium text-muted-foreground bg-muted/20">
           Description
         </div>
-        <div className="flex flex-1">
+        <div className="flex flex-1 overflow-hidden">
           {allWeeks.map((week, idx) => {
             // Calculate how many days of this week are visible in our timeline
             const visibleStart = week.start < timelineStart ? timelineStart : week.start;
@@ -74,7 +78,7 @@ export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineH
             return (
               <div
                 key={idx}
-                className="px-2 py-3 text-center text-sm font-medium text-muted-foreground border-r border-gantt-grid"
+                className="px-2 py-3 text-center text-sm font-medium text-muted-foreground border-r border-gantt-grid shrink-0"
                 style={{ width: `${visibleDays * dayWidth}px` }}
               >
                 w{week.weekNumber}
@@ -89,7 +93,7 @@ export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineH
         <div className="w-80 shrink-0 px-6 py-3 text-sm font-medium text-muted-foreground bg-muted/10">
           Duration
         </div>
-        <div className="flex flex-1">
+        <div className="flex flex-1 overflow-hidden">
           {months.map((month, monthIdx) => {
             const days = eachDayOfInterval({
               start: startOfMonth(month),
@@ -97,7 +101,7 @@ export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineH
             });
 
             return (
-              <div key={monthIdx} className="flex border-l border-border">
+              <div key={monthIdx} className="flex shrink-0">
                 {days.map((day, dayIdx) => {
                   const showDayInitials = monthsToShow >= 3;
                   const dayLabel = showDayInitials 
@@ -110,7 +114,7 @@ export const TimelineHeader = ({ startMonth, monthsToShow, dayWidth }: TimelineH
                   return (
                     <div
                       key={dayIdx}
-                      className="px-1 py-3 text-center font-medium text-muted-foreground border-l border-gantt-grid first:border-l-0"
+                      className="px-1 py-3 text-center font-medium text-muted-foreground border-l border-gantt-grid first:border-l-0 shrink-0"
                       style={{ 
                         width: `${dayWidth}px`,
                         fontSize: fontSize
